@@ -1,0 +1,60 @@
+
+
+
+<html>
+<head>
+
+	</head>
+	<body>
+
+
+{% include "logoutBtn.html" %}
+<a  href='{{url_for('addCategory')}}' >+ Add</a>
+
+<div >
+		      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+	{% for i in categories %}
+    <div >
+		<span ><p>{{i.name}}</p></span>
+
+
+	</div>
+
+
+
+
+	<div >
+  <a href='{{url_for('items',category_id = i.id)}}' >View</a>
+	<a href='{{url_for('editCategory',category_id = i.id)}}' >Edit</a>
+  <a href='{{url_for('deleteCategory',category_id = i.id)}}' >Delete</a>
+
+	</div>
+
+
+
+
+		{% endfor %}
+
+
+
+
+
+</div>
+
+	</body>
+
+
+
+
+</html>
