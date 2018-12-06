@@ -379,6 +379,7 @@ def editItem(category_id, item_id):
         'POST'])
 def deleteItem(category_id, item_id):
     if request.method == 'POST':
+        print('jdndsfdsj')
         category = session.query(
             Category).filter_by(id=category_id).one()
         if category.user_id != login_session['user_id']:
@@ -389,6 +390,10 @@ def deleteItem(category_id, item_id):
         session.delete(item)
         session.commit()
         flash("deleted item")
+        items = session.query(Item).all()
+
+        if len(items) < 1:
+            return redirect('/categories')
         return redirect(
             url_for(
                 'items',

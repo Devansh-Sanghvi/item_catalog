@@ -50,7 +50,7 @@ To get the Google login working there are a few additional steps:
 11. On the Dev Console Select Download JSON
 12. Rename JSON file to client_secrets.json
 13. Place JSON file in item-catalog directory that you cloned from here
-14. Run application using `python /item-catalog/app.py`
+14. Run application using `python /item-catalog/project.py`
 
 ##Installing And Running The app
 1.) The app imports requests which is not on this vm. Run sudo pip install requests
