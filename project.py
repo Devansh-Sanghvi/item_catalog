@@ -266,6 +266,7 @@ def deleteCategory(category_id):
             Category).filter_by(id=category_id).one()
         return render_template('deleteCategory.html', category=category)
 
+
 @app.route('/categories/JSON')
 def categoriesJSON():
     categories = session.query(Category).all()
@@ -305,7 +306,6 @@ def itemsJSON(category_id):
 
 @app.route('/category/<int:category_id>/new/', methods=['GET', 'POST'])
 def newItem(category_id):
-
 
     if request.method == 'POST':
         category = session.query(
