@@ -10,7 +10,14 @@ from flask import session as login_session
 from database_setup import Base, Category, Item, User
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, asc
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask import (Flask,
+                   render_template,
+                   request,
+                   redirect,
+                   jsonify,
+                   url_for,
+                   flash)
+
 app = Flask(__name__)
 
 #
@@ -135,6 +142,7 @@ def gdisconnect():
             json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
+    # NOQA
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
@@ -217,7 +225,9 @@ def editCategory(category_id):
         category = session.query(
             Category).filter_by(id=category_id).one()
         if category.user_id != login_session['user_id']:
-            return "<script>function myFunction() {alert('You are not authorized to edit this category . Please create your own category  in order to edit.');}</script><body onload='myFunction()'>"
+            return """<script>function myFunction() {
+                      alert('You are not authorized to edit this category ');}
+                      </script><body onload='myFunction()'>"""
         if request.form['category'] != '':
             category.name = request.form['category']
             session.add(category)
@@ -243,8 +253,9 @@ def deleteCategory(category_id):
         category = session.query(
             Category).filter_by(id=category_id).one()
         if category.user_id != login_session['user_id']:
-            return "<script>function myFunction() {alert('You are not authorized to edit this category . Please create your own category  in order to edit.');}</script><body onload='myFunction()'>"
-
+            return """<script>function myFunction() {
+                      alert('You are not authorized to edit this category ');}
+                      </script><body onload='myFunction()'>"""
         session.delete(category)
         session.commit()
         flash('category  deleted')
@@ -254,7 +265,6 @@ def deleteCategory(category_id):
         category = session.query(
             Category).filter_by(id=category_id).one()
         return render_template('deleteCategory.html', category=category)
-
 
 @app.route('/categories/JSON')
 def categoriesJSON():
@@ -296,14 +306,19 @@ def itemsJSON(category_id):
 @app.route('/category/<int:category_id>/new/', methods=['GET', 'POST'])
 def newItem(category_id):
 
+
     if request.method == 'POST':
-        print(request.form['name'])
+        category = session.query(
+            Category).filter_by(id=category_id).one()
+        if category.user_id != login_session['user_id']:
+            return """<script>function myFunction() {
+                      alert('You are not authorized to edit this category ');}
+                      </script><body onload='myFunction()'>"""
         if request.form['name'] != '' and request.form['description'] != '':
             new_item = Item(
                 name=request.form['name'],
                 description=request.form['description'],
                 category_id=category_id)
-
             session.add(new_item)
             session.commit()
             flash("new item added")
@@ -326,10 +341,15 @@ def newItem(category_id):
         'GET',
         'POST'])
 def editItem(category_id, item_id):
+
     if request.method == 'POST':
         category = session.query(
             Category).filter_by(id=category_id).one()
         item = session.query(Item).filter_by(id=item_id).one()
+        if category.user_id != login_session['user_id']:
+            return """<script>function myFunction() {
+                      alert('You are not authorized to edit this category ');}
+                      </script><body onload='myFunction()'>"""
         if request.form['name'] != '':
             item.name = request.form['name']
 
@@ -359,6 +379,12 @@ def editItem(category_id, item_id):
         'POST'])
 def deleteItem(category_id, item_id):
     if request.method == 'POST':
+        category = session.query(
+            Category).filter_by(id=category_id).one()
+        if category.user_id != login_session['user_id']:
+            return """<script>function myFunction() {
+                      alert('You are not authorized to edit this category ');}
+                      </script><body onload='myFunction()'>"""
         item = session.query(Item).filter_by(id=item_id).one()
         session.delete(item)
         session.commit()
